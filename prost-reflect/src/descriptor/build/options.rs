@@ -467,7 +467,7 @@ impl<'a> OptionsVisitor<'a> {
         &self,
         value: &mut Value,
         resolved_path: &mut Vec<i32>,
-        desc: &impl FieldDescriptorLike,
+        desc: &dyn FieldDescriptorLike,
         option: &UninterpretedOption,
         file: FileIndex,
         path: &[i32],
@@ -672,7 +672,7 @@ pub(super) fn option_to_map_entry(
     Ok((key, value))
 }
 
-fn fmt_field_ty(field: &impl FieldDescriptorLike) -> String {
+fn fmt_field_ty(field: &dyn FieldDescriptorLike) -> String {
     if field.is_map() {
         let entry = field.kind();
         let entry = entry.as_message().unwrap();

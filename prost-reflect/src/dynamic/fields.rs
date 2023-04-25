@@ -57,20 +57,20 @@ impl DynamicMessageFieldSet {
         }
     }
 
-    pub(super) fn has(&self, desc: &impl FieldDescriptorLike) -> bool {
+    pub(super) fn has(&self, desc: &dyn FieldDescriptorLike) -> bool {
         self.get_value(desc.number())
             .map(|value| desc.has(value))
             .unwrap_or(false)
     }
 
-    pub(super) fn get(&self, desc: &impl FieldDescriptorLike) -> Cow<'_, Value> {
+    pub(super) fn get(&self, desc: &dyn FieldDescriptorLike) -> Cow<'_, Value> {
         match self.get_value(desc.number()) {
             Some(value) => Cow::Borrowed(value),
             None => Cow::Owned(desc.default_value()),
         }
     }
 
-    pub(super) fn get_mut(&mut self, desc: &impl FieldDescriptorLike) -> &mut Value {
+    pub(super) fn get_mut(&mut self, desc: &dyn FieldDescriptorLike) -> &mut Value {
         self.clear_oneof_fields(desc);
         match self.fields.entry(desc.number()) {
             btree_map::Entry::Occupied(entry) => match entry.into_mut() {
@@ -86,7 +86,7 @@ impl DynamicMessageFieldSet {
         }
     }
 
-    pub(super) fn set(&mut self, desc: &impl FieldDescriptorLike, value: Value) {
+    pub(super) fn set(&mut self, desc: &dyn FieldDescriptorLike, value: Value) {
         debug_assert!(
             desc.is_valid(&value),
             "invalid value {:?} for field {:?}",
@@ -99,7 +99,7 @@ impl DynamicMessageFieldSet {
             .insert(desc.number(), ValueOrUnknown::Value(value));
     }
 
-    fn clear_oneof_fields(&mut self, desc: &impl FieldDescriptorLike) {
+    fn clear_oneof_fields(&mut self, desc: &dyn FieldDescriptorLike) {
         if let Some(oneof_desc) = desc.containing_oneof() {
             for oneof_field in oneof_desc.fields() {
                 if oneof_field.number() != desc.number() {
@@ -123,7 +123,7 @@ impl DynamicMessageFieldSet {
         }
     }
 
-    pub(super) fn clear(&mut self, desc: &impl FieldDescriptorLike) {
+    pub(super) fn clear(&mut self, desc: &dyn FieldDescriptorLike) {
         self.fields.remove(&desc.number());
     }
 

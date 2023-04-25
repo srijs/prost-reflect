@@ -178,7 +178,7 @@ impl<'a> Parser<'a> {
     fn parse_field_value(
         &mut self,
         message: &mut DynamicMessage,
-        field: &impl FieldDescriptorLike,
+        field: &dyn FieldDescriptorLike,
     ) -> Result<(), ParseErrorKind> {
         if field.is_list() {
             let (value, _) = self.parse_repeated_value(&field.kind())?;

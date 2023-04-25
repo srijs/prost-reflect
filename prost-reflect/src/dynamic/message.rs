@@ -91,7 +91,7 @@ impl Message for DynamicMessage {
 }
 
 impl Value {
-    pub(super) fn encode_field<B>(&self, field_desc: &impl FieldDescriptorLike, buf: &mut B)
+    pub(super) fn encode_field<B>(&self, field_desc: &dyn FieldDescriptorLike, buf: &mut B)
     where
         B: BufMut,
     {
@@ -282,7 +282,7 @@ impl Value {
 
     pub(super) fn merge_field<B>(
         &mut self,
-        field_desc: &impl FieldDescriptorLike,
+        field_desc: &dyn FieldDescriptorLike,
         wire_type: WireType,
         buf: &mut B,
         ctx: DecodeContext,
@@ -393,7 +393,7 @@ impl Value {
         }
     }
 
-    pub(super) fn encoded_len(&self, field_desc: &impl FieldDescriptorLike) -> usize {
+    pub(super) fn encoded_len(&self, field_desc: &dyn FieldDescriptorLike) -> usize {
         if !field_desc.supports_presence() && field_desc.is_default_value(self) {
             return 0;
         }
